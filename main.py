@@ -26,11 +26,14 @@ while True:
     if tm_hour == 7:  # 每天09:00-16:00开始刷视频。
         print("各软件签到")
         weishiSignSuccess = weishi.signIn()  # 微视签到
-        douyinSignSuccess = douyin.signIn()
+        # douyinSignSuccess = douyin.signIn()#做任务的时候可以顺带完成签到
+
 
 
         print("各软件提现")
         weishiSignSuccess = weishi.withDrawal()  # 微视签到
+        douyin.withDrawl()
+
 
     print("签到完成，做任务")
     if tm_hour >= 9 and tm_hour <= 16:  # 每天09:00-16:00开始刷视频。

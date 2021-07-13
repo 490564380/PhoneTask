@@ -12,17 +12,11 @@ class DouYin:
     # 签到
     def signIn(self):
         d = u2.connect(self.deviceId)
+        d.app_stop(self.package)
         d.app_start(self.package)
-        time.sleep(15)
-        # 邀请好友弹窗判断
-        byeExist = d(resourceId="com.ss.android.ugc.aweme.lite:id/bai").exists(timeout=5)
-        if byeExist:
-            d(resourceId="com.ss.android.ugc.aweme.lite:id/bai").click()
-        # 通讯录弹窗判断
-        noNeedExist = d(text="暂时不要").exists(timeout=5)
-        if noNeedExist:
-            d(text="暂时不要").click()
+        time.sleep(10)
 
+        self.handleStartUpDialog(d)
         d.xpath(
             '//*[@resource-id="android:id/content"]/android.widget.FrameLayout[2]/android.widget.RelativeLayout[1]/android.widget.RelativeLayout[1]').click()
         time.sleep(5)
@@ -74,16 +68,70 @@ class DouYin:
                 time.sleep(15 + i % 10)
         print(self.package, "total duration = %s" % duration)
         time.sleep(3)
+
+        self.doJob(d)
         d.app_stop(self.package)
 
     # 处理启动各种弹窗
     def handleStartUpDialog(self, d):
-        print(self.package, "升级窗口判断")
-        updateExist = d(resourceId="com.tencent.weishi:id/ov").exists(timeout=5)
-        if updateExist:
-            d.click(0.784, 0.353)  # 关闭页面
+        print(self.package, "****** handleStartUpDialog ******")
 
-        print(self.package, "朋友推荐弹窗")
+        print(self.package, "邀请好友弹窗处理")
+        byeExist = d(resourceId="com.ss.android.ugc.aweme.lite:id/bai").exists(timeout=5)
+        if byeExist:
+            d(resourceId="com.ss.android.ugc.aweme.lite:id/bai").click()
+
+        print(self.package, " 通讯录弹窗判断处理")
+        noNeedExist = d(text="暂时不要").exists(timeout=5)
+        if noNeedExist:
+            d(text="暂时不要").click()
+
+        print(self.package, "朋友推荐弹窗处理")
         friendExist = d(resourceId="com.ss.android.ugc.aweme.lite:id/dat").exists(timeout=5)
         if friendExist:
             d.click(0.857, 0.223)
+
+        print(self.package, "进入儿童/青少年模式弹窗处理")
+        childModeExist = d(text="进入儿童/青少年模式").exists(timeout=5)
+        if childModeExist:
+            d.click(0.489, 0.684)
+
+    # 处理启动各种弹窗
+    def handleJobDialog(self, d):
+        print(self.package, "****** handleJobDialog ******")
+
+        print(self.package, "今日签到")
+        signInExist = d(text="今日签到").exists(timeout=5)
+        if signInExist:
+            d.click(0.459, 0.625)
+
+        dialogExist = d(text="签到提醒").exists(timeout=5)
+        if dialogExist:
+            d.click(0.51, 0.63)
+            time.sleep(60)
+            d.click(0.92, 0.04)
+
+        dialogExist = d(description="坚持退出").exists(timeout=5)
+        if dialogExist:
+            d.click(0.496, 0.569)
+            time.sleep(60)
+            d.click(0.92, 0.04)
+
+    # 做进入任务页赚钱
+    def doJob(self, d):
+        print(self.package, "做任务赚钱")
+        d.xpath(
+            '//*[@resource-id="android:id/content"]/android.widget.FrameLayout[2]/android.widget.RelativeLayout[1]/android.widget.RelativeLayout[1]').click()
+        time.sleep(5)
+        self.handleJobDialog(d)
+        print(self.package, "看广告赚金币")
+        btnExist = d(text="看广告赚金币").exists(timeout=5)
+        if btnExist:
+            d.click(0.8, 0.5)
+            time.sleep(60)
+            d.click(0.92, 0.04)
+            self.handleJobDialog(d)
+
+    # 提现
+    def withDrawal(self):
+        print(self.package, "withDrawal")
