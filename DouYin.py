@@ -46,7 +46,7 @@ class DouYin:
         d.app_stop(self.package)
         d.app_start(self.package)
         self.handleStartUpDialog(d)
-
+        self.doJob(d)
         playing = True
         timeStart = time.time()
         duration = 0
@@ -131,6 +131,8 @@ class DouYin:
             time.sleep(60)
             d.click(0.92, 0.04)
             self.handleJobDialog(d)
+            time.sleep(3)
+        d.press("back")
 
     # 提现
     def withDrawal(self):
