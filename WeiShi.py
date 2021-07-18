@@ -5,19 +5,19 @@ from uiautomator2 import Direction
 
 class WeiShi:
 
-    def __init__(self, deviceId):
-        self.deviceId = deviceId
+    def __init__(self, connection):
+        self.connection = connection
         self.package = "com.tencent.weishi"
 
     # 签到
     def signIn(self):
         print(self.package, "***signIn签到***")
-        d = u2.connect(self.deviceId)
+        d = self.connection
 
         print(self.package, "重启")
         d.app_stop(self.package)
         d.app_start(self.package)
-        time.sleep(15)
+        time.sleep(30)
 
         self.handleStartUpDialog(d)
 
@@ -42,12 +42,12 @@ class WeiShi:
     # 提现
     def withDrawal(self):
         print(self.package, "***withDrawal提现***")
-        d = u2.connect(self.deviceId)
+        d = self.connection
 
         print(self.package, "重启")
         d.app_stop(self.package)
         d.app_start(self.package)
-        time.sleep(15)
+        time.sleep(30)
 
         self.handleStartUpDialog(d)
 
@@ -78,11 +78,13 @@ class WeiShi:
 
     # 刷视频做任务赚钱
     def makeMoney(self):
-        d = u2.connect(self.deviceId)
+        d = self.connection
 
         print(self.package, "重启应用")
         d.app_stop(self.package)
         d.app_start(self.package)
+
+        time.sleep(30)
         self.handleStartUpDialog(d)
 
         playing = True
@@ -115,3 +117,6 @@ class WeiShi:
         updateExist = d(resourceId="com.tencent.weishi:id/ov").exists(timeout=5)
         if updateExist:
             d.click(0.784, 0.353)  # 关闭页面
+        updateExist = d(resourceId="com.tencent.weishi:id/oo").exists(timeout=5)
+        if updateExist:
+            d.click(0.784, 0.351)  # 关闭页面
